@@ -12,7 +12,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
 
     const renderMessages = (): JSX.Element[] => {
         return messages.map((message, idx) => {
-            return (<div key={idx}>
+            return (<div className="ListItemMessage" key={`${message}_${idx}`}>
                     <Message 
                         message={message}
                     />
@@ -70,7 +70,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
                     <button>Add to Favorites</button>
                 </div>
                 <div className="ListItemChatContainer">
-                    <div className="ListItemMessagesArea scrollable-element">
+                    <div className="ListItemMessagesArea Scrollable-Element">
                         <p>Chatroom</p>
                         {renderMessages()}
                         <div className="ListItemLastMessage" ref={messagesEndRef}></div>
@@ -78,7 +78,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
                     <textarea
                         placeholder="Send a message"
                         name="messages"
-                        className="ListItemSendMessages"
+                        className="ListItemSendMessages Hidden-Scrollable-Element"
                         value={input}
                         onKeyDown={handleKeyPress}
                         onChange={handleChange}
