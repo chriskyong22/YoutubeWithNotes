@@ -1,25 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import List from "./Components/List"
+import Form from "./Components/Form"
+
+export interface videoType {
+  title: string;
+  url: string;
+  id: string;
+}
+
+export interface messagesType {
+  messages: string[];
+}
+
+export interface videosType{
+  videos: videoType[];
+}
 
 function App() {
+
+  const [favorites, setFavorites] = useState<videosType["videos"]>([])
+
+  const [videos, setVideos] = useState<videosType["videos"]>([{
+    title: "Playlist",
+    url : "https://www.youtube.com/embed/vr_IHczK9kc",
+    // url: "https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3",
+    id: "someHash"
+  }]);
+  
+  const [messages, setMessages] = useState<messagesType["messages"]>([])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 className="CenterNoWidth">
+        Youtube with Chat
+      </h1>
+      <List videos={videos} messages={messages} setMessages={setMessages} favorites={favorites} setFavorites={setFavorites}/>
+      <Form videos={videos} setVideos={setVideos}/>    
+    </>
   );
 }
 
