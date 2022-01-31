@@ -34,7 +34,7 @@ function App() {
   }]);
   
   const [messages, setMessages] = useState<messagesType["messages"]>([
-    ["0:00", "TestMessage"]
+    ["0-", "TestMessage"]
   ])
 
   return (

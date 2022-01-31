@@ -1,8 +1,8 @@
 import React, { useState, useRef, useLayoutEffect } from "react"
 import {  videoType, messagesType } from "../App"
 import { YoutubeIframe } from "./YoutubeIframe"
-import { getTimestamp } from "../Utilities/helper"
 import { Message } from "./Message"
+import { getTimestamp } from "../Utilities/helper"
 
 interface cardProps {
     video: videoType;
@@ -30,6 +30,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
                     <Message 
                         message={message}
+                        seekFunction={seekToTime}
                     />
                 </div>);
         })
@@ -68,7 +69,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             // (endTime) ? getTimestamp(endTime) : ""
             setMessages([
                 ...messages,
-                [`[${getTimestamp(parseInt(input.beginTime))} ${(endTime) ? "- " + getTimestamp(endTime) : ""}]`, input.text]
+                [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text]
             ])
             setInput({
                 beginTime: "",
@@ -92,6 +93,18 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             beginTime: event.target.value
         })
     }
+
+    const seekToTime = (timestamp: string): (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => void => {
+        let beginTime = timestamp;
+        console.log(`Seeking to ${beginTime}`)
+        return (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>): void => {
+            if (player) {
+                player.seekTo(parseFloat(beginTime), true);
+            }
+        }
+    }
+    
+
 
     const renderCard = () => {
         return (
@@ -121,7 +134,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
                         type="text"
                         placeholder="Beginning Timestamp [HH:MM:SS]"
                         name="beginTime"
-                        value={input.beginTime}
+                        value={input.beginTime !== "" ? getTimestamp(parseFloat(input.beginTime)) : ""}
                         onChange={changeBeginningTimeStamp}
                     />
                 </div>

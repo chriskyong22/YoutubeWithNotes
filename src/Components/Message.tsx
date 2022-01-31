@@ -1,15 +1,21 @@
 import React from "react"
+import { getTimestamp } from "../Utilities/helper"
 import { messageType } from "../App"
 
 interface messageProps {
     message: messageType;
+    seekFunction: (timestamp: string) => (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => void;
 }
 
-export const Message : React.FC<messageProps> = ( { message } ): JSX.Element => {
+export const Message : React.FC<messageProps> = ( { message, seekFunction } ): JSX.Element => {
+    let beginTime = message[0].split('-')[0];
+    let endTime = message[0].split('-')[1];
+    console.log(message);
+    let timestamp = `[${getTimestamp(parseFloat(beginTime))}${endTime != "" ? " - " + getTimestamp(parseFloat(endTime)) : ""}]`
     return (
         <div className="ListItemMessage">
-            <div className="ListItemMessageTimestamp">
-                {message[0]}
+            <div className="ListItemMessageTimestamp" onClick={seekFunction(beginTime)}>
+                {timestamp}
             </div>
             <div>
                 {message[1]}
