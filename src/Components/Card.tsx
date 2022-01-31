@@ -1,12 +1,13 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from "react"
-import {  videoType, videosType } from "../App"
+import React, { useState, useRef, useLayoutEffect } from "react"
+import {  videoType, messagesType } from "../App"
+import { YoutubeIframe } from "./YoutubeIframe"
 import { getTimestamp } from "../Utilities/helper"
 import { Message } from "./Message"
 
 interface cardProps {
     video: videoType;
-    videos: videosType["videos"];
-    setVideos: React.Dispatch<React.SetStateAction<videosType["videos"]>>;
+    messages: messagesType["messages"];
+    setMessages: React.Dispatch<React.SetStateAction<messagesType["messages"]>>;
 }
 
 interface inputState {
@@ -15,11 +16,8 @@ interface inputState {
     endTime: string;
 }
 
-declare global {
-    function onYouTubeIframeAPIReady(): void;
-}
 
-const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
+const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
 
     const [player, setPlayer] = useState<YT.Player>();
 
@@ -27,48 +25,8 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
         return player?.getCurrentTime();
     }
 
-    const onReady = () => {
-        console.log("Loaded API");
-    }
-
-    const loadVideo = () => {
-        console.log("Setting the object!")
-        let player = new window.YT.Player(`Youtube-Iframe-${video.url}`, {
-            events: {
-                'onReady': onReady
-            }
-        })
-        if (player.getCurrentTime === undefined) {
-            console.log(document.getElementById(`Youtube-Iframe-${video.url}`))
-        }
-        console.log(player.getCurrentTime);
-        setPlayer(player); 
-    }
-
-    useEffect(() => {
-        // YT script already loaded
-        if (window.YT) {
-            console.log("Script already exist!")
-            loadVideo()
-        } else {
-            // Creating the tag
-            const tag = document.createElement('script')
-            tag.src = "https://www.youtube.com/iframe_api"
-
-            // Insert the tag before the first script node 
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            if (firstScriptTag.parentNode) {
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            }
-            console.log("Setup Loading")
-            window.onYouTubeIframeAPIReady = loadVideo;
-        }
-    }, [])
-
-
-
     const renderMessages = (): JSX.Element[] => {
-        return video.messages.map((message, idx) => {
+        return messages.map((message, idx) => {
             return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
                     <Message 
                         message={message}
@@ -76,7 +34,6 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
                 </div>);
         })
     }
-
 
     const [input, setInput] = useState<inputState>({
         beginTime: "",
@@ -97,7 +54,7 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
 
     useLayoutEffect(() => {
         scrollToBottomMessage()
-    }, [video.messages]);
+    }, [messages]);
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
         if (event.key === "Enter") {
@@ -106,12 +63,12 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
                 return;
             }
 
-            // let endTime = getCurrentTime();
+            let endTime = getCurrentTime();
             // getTimestamp(parseInt(input.beginTime))
             // (endTime) ? getTimestamp(endTime) : ""
-            setVideos([
-                ...videos,
-                video
+            setMessages([
+                ...messages,
+                [`[${getTimestamp(parseInt(input.beginTime))} ${(endTime) ? "- " + getTimestamp(endTime) : ""}]`, input.text]
             ])
             setInput({
                 beginTime: "",
@@ -124,7 +81,7 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         setInput({
             ...input,
-            // beginTime: input.beginTime === "" ? getCurrentTime() + "" : input.beginTime,
+            beginTime: input.beginTime === "" ? getCurrentTime() + "" : input.beginTime,
             text: event.target.value
         });
     }
@@ -140,16 +97,10 @@ const Card: React.FC<cardProps> = ({ video, videos, setVideos }) => {
         return (
             <>
                 <div className="ListItemHeader">
-                    <iframe 
-                        src={video.url}
-                        allow="encrypted-media"
-                        // width={video.url.indexOf("youtube") == -1 ? "300" : "100%"}
-                        // height={video.url.indexOf("youtube") == -1 ? "380" : "75%"}
-                        frameBorder="0"
-                        loading="lazy"
-                        id={`Youtube-Iframe-${video.url}`}
-                    >
-                    </iframe>
+                    <YoutubeIframe
+                        setPlayer={setPlayer}
+                        url={video.url}
+                    />
                     <button>Add to Favorites</button>
                 </div>
                 <div className="ListItemChatContainer">

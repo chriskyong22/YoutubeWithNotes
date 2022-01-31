@@ -1,24 +1,23 @@
 import React, { useState } from "react"
-import { videoType, videosType } from "../App"
+import { videoType, videosType} from "../App"
 
 interface parameters {
     videos: videosType["videos"];
     setVideos: React.Dispatch<React.SetStateAction<videoType[]>>;
 }
 
-// interface inputType {
-//     title: string;
-//     url: string;
-//     id: string;
-// }
+interface inputType {
+    title: string;
+    url: string;
+    id: string;
+}
 
 const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => { 
     
-    const [input, setInput] = useState<videoType>({
+    const [input, setInput] = useState<inputType>({
         title: "",
         url: "",
-        id: "",
-        messages: []
+        id: ""
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -39,16 +38,14 @@ const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => {
             {
                 title: input.title,
                 url: input.url,
-                id: input.id,
-                messages: []
+                id: input.id
             }
         ])
 
         setInput({
             title: "",
             url: "",
-            id: "",
-            messages: []
+            id: ""
         })
     }
 
