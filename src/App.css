@@ -75,6 +75,9 @@
   width: 95%;
   overflow: auto;
   overflow-wrap: anywhere;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .ListItemSendMessages {
@@ -91,12 +94,32 @@
   background-color: red;
 }
 
-.ListItemMessage:hover {
+.ListItemMessageContainer {
+  width: 100%;
+}
+
+.ListItemMessage {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ListItemMessageContainer:hover {
   background-color: rgb(191, 203, 214);
 }
 
+.ListItemMessageTimestamp:hover {
+  background-color: white;
+}
+
+
 .ListItemSendMessages:active, .ListItemSendMessages:focus {
   background-color:white;
+}
+
+.Youtube-Iframe {
+
 }
 
 .CenterNoWidth {

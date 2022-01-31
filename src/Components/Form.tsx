@@ -17,7 +17,8 @@ const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => {
     const [input, setInput] = useState<videoType>({
         title: "",
         url: "",
-        id: ""
+        id: "",
+        messages: []
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -38,14 +39,16 @@ const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => {
             {
                 title: input.title,
                 url: input.url,
-                id: input.id
+                id: input.id,
+                messages: []
             }
         ])
 
         setInput({
             title: "",
             url: "",
-            id: ""
+            id: "",
+            messages: []
         })
     }
 

@@ -1,16 +1,15 @@
 import React from "react"
-import { videosType, videoType } from "../App"
+import { videosType, videoType, messagesType, messageType } from "../App"
 import Card from "./Card"
 
 interface listProps {
     videos: videosType["videos"];
-    messages: string[];
-    setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+    setVideos: React.Dispatch<React.SetStateAction<videosType["videos"]>>;
     favorites: videosType["videos"];
     setFavorites: React.Dispatch<React.SetStateAction<videoType[]>>
 }
 
-const List: React.FC<listProps> = ( { videos, messages, setMessages, favorites, setFavorites } ) => {
+const List: React.FC<listProps> = ( { videos, setVideos, favorites, setFavorites } ) => {
 
     const renderItems = (): JSX.Element[] => {
         return videos.map((video, idx) => {
@@ -18,8 +17,8 @@ const List: React.FC<listProps> = ( { videos, messages, setMessages, favorites, 
                 <li className="ListItemContainer" key={idx}>
                     <Card 
                         video={video}
-                        messages={messages}
-                        setMessages={setMessages}
+                        videos={videos}
+                        setVideos={setVideos}
                     />
                 </li>)
          })
