@@ -3,7 +3,7 @@ import { videoType } from "../App"
 import { YoutubeIframe } from "./YoutubeIframe"
 import { MemoizedMessage } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
-import { Chatbox } from "./Chatbox"
+import { MemoizedChatbox } from "./Chatbox"
 
 export interface messageType {
     message: [string, string];
@@ -131,10 +131,9 @@ const Card: React.FC<cardProps> = ({ video }) => {
                         {//ref={messagesEndRef}
                         }
                     </div>
-                    <Chatbox
+                    <MemoizedChatbox
                         player={player}
                         video={video}
-                        messages={messages}
                         setMessages={setMessages}
                     />
                 </div>

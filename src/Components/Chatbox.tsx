@@ -13,11 +13,10 @@ interface inputState {
 interface chatBoxProps { 
     player: YT.Player | undefined;
     video: videoType;
-    messages: messagesType["messages"]
     setMessages: React.Dispatch<React.SetStateAction<messagesType["messages"]>>
 }
 
-export const Chatbox: React.FC<chatBoxProps> = ({player, video, messages, setMessages}): JSX.Element => {
+export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): JSX.Element => {
 
     const getCurrentTime = () => {
         return player?.getCurrentTime();
@@ -43,10 +42,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, messages, setMes
             let endTime = getCurrentTime();
             let newMessage: messageType["message"] = [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text];
             
-            setMessages([
-                ...messages,
-                newMessage
-            ])
+            setMessages((oldMessages) => [...oldMessages, newMessage])
 
             storeNewMessage([newMessage[0], newMessage[1]]);
 
@@ -93,3 +89,5 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, messages, setMes
         </>
     )
 }
+
+export const MemoizedChatbox = React.memo(Chatbox);
