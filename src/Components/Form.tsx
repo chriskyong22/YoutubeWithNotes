@@ -76,7 +76,6 @@ const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => {
             >
                 Submit
             </button>
-
         </div>
     )
 }

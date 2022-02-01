@@ -1,4 +1,5 @@
 import { openDB, DBSchema } from "idb";
+import { messageType, messagesType } from "../Components/Card"
 
 const DATABASE_NAME = `VIDEONOTESDB`
 const tableName = `videosNotesTable`;
@@ -9,11 +10,11 @@ interface MyDB extends DBSchema {
         key: string;
         value: {
             'url': string;
-            'notes': string[][];
+            'notes': messagesType["messages"];
         };
         indexes: {
             'url': string;
-            'notes': string[][];
+            'notes': messagesType["messages"];
         }
     }
 }
@@ -62,7 +63,7 @@ export const deleteKey = async (key: string) => {
     })
 }
 
-export const updateKey = async (key: string, notes: string[][]) => {    
+export const updateKey = async (key: string, notes: messagesType["messages"]) => {    
     return dbPromise.then(db => {
         return db.transaction(tableName, transactionModes.READWRITE).objectStore(tableName).put({notes: notes, url: key});
     }).catch((error) => {
@@ -70,7 +71,7 @@ export const updateKey = async (key: string, notes: string[][]) => {
     })
 }
 
-export const append = async (key: string, newNote: string[]) => {
+export const append = async (key: string, newNote: messageType["message"]) => {
     let oldNotes = await getKey(key);
     if (oldNotes) {
         oldNotes.notes.push(newNote);

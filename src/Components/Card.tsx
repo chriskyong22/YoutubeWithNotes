@@ -1,18 +1,17 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react"
 import {  videoType } from "../App"
 import { YoutubeIframe } from "./YoutubeIframe"
-import { Message } from "./Message"
+import { Message, MemoizedMessage } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
 import { getTimestamp } from "../Utilities/helper"
 import { useCallback } from "react"
 
 export interface messageType {
-    0: string;
-    1: string;
+    message: [string, string];
 }
-  
+
 export interface messagesType {
-    messages: messageType[];
+    messages: messageType["message"][];
 }
 
 interface cardProps {
@@ -43,11 +42,12 @@ const Card: React.FC<cardProps> = ({ video }) => {
             return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
                     {
                         player !== undefined ?
-                        <Message 
+                        <MemoizedMessage 
                             message={message}
                             seekFunction={memoizedSeekToTime}
+                            deleteMessage={memoizedDeleteMessage}
                         /> :
-                        "Please wait for the youtube to load in"
+                        ""
                     }
                 </div>);
         })
@@ -70,7 +70,7 @@ const Card: React.FC<cardProps> = ({ video }) => {
         }
     }
 
-    function getValues() {
+    const getValues = (): void => {
         getKey(video.url).then((_messages) => {
                 let formattedMessages: messagesType["messages"] = [];
                 console.log("Retrieved Notes from DB")
@@ -84,21 +84,15 @@ const Card: React.FC<cardProps> = ({ video }) => {
         console.log("Finished retrieving the notes");
     }
 
-    async function storeAllMessages() {
+    const storeAllMessages = async (): Promise<void> => {
         console.log("Storing all the messages");
-        let formatMessages: string[][] = [];
-        for (let message of messages) {
-            let convertToStringArray: string[] = [message[0], message[1]];
-            formatMessages.push(convertToStringArray);
-        }
-        await updateKey(video.url, formatMessages);
+        await updateKey(video.url, messages);
     }
 
-    async function storeNewMessage(newMessage: string[]) {
+    const storeNewMessage = async (newMessage: messageType["message"]): Promise<void> => {
         console.log("Storing the new message!");
         await append(video.url, newMessage);
     }
-
 
     useEffect(() => {
         getValues();
@@ -116,8 +110,19 @@ const Card: React.FC<cardProps> = ({ video }) => {
         }
     }
 
+    const deleteMessage = (message: messageType["message"]): void => {
+        console.log(messages);
+        let filteredMessages = messages.filter((_message) => {
+            return _message !== message;
+        })
+        console.log(filteredMessages);
+        setMessages(filteredMessages);
+    }
+
     // Dependent on messages and player (if player is not loaded in, the onClick functions won't work till seekTime is updated)
     const memoizedSeekToTime = useCallback(seekToTime, [messages, player]);
+
+    const memoizedDeleteMessage = useCallback(deleteMessage, [messages]);
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
         if (event.key === "Enter") {
@@ -126,7 +131,7 @@ const Card: React.FC<cardProps> = ({ video }) => {
                 return;
             }
             let endTime = getCurrentTime();
-            let newMessage: messageType = [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text];
+            let newMessage: messageType["message"] = [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text];
             
             setMessages([
                 ...messages,
