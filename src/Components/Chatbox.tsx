@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { messagesType, messageType } from "./Card"
+import { messagesType, messageType } from "./ChatboxContainer"
 import { videoType } from "../App"
 import { getTimestamp } from "../Utilities/helper"
 import { append } from "../Services/DBService"

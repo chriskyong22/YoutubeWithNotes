@@ -1,6 +1,6 @@
 import React from "react"
 import { getTimestamp } from "../Utilities/helper"
-import { messageType } from "./Card"
+import { messageType } from "./ChatboxContainer"
 
 interface messageProps {
     message: messageType["message"];

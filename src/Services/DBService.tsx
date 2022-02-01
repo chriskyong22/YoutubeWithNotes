@@ -1,5 +1,5 @@
 import { openDB, DBSchema } from "idb";
-import { messageType, messagesType } from "../Components/Card"
+import { messageType, messagesType } from "../Components/ChatboxContainer"
 
 const DATABASE_NAME = `VIDEONOTESDB`
 const tableName = `videosNotesTable`;
