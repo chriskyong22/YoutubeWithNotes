@@ -1,8 +1,10 @@
-import React, { useState, useRef, useLayoutEffect } from "react"
-import {  videoType, messagesType } from "../App"
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react"
+import {  videoType, messagesType, messageType } from "../App"
 import { YoutubeIframe } from "./YoutubeIframe"
 import { Message } from "./Message"
+import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
 import { getTimestamp } from "../Utilities/helper"
+import { useCallback } from "react"
 
 interface cardProps {
     video: videoType;
@@ -30,7 +32,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
                     <Message 
                         message={message}
-                        seekFunction={seekToTime}
+                        seekFunction={memoizedSeekToTime}
                     />
                 </div>);
         })
@@ -53,9 +55,57 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
         }
     }
 
+    function getValues() {
+        getAll().then((value) => {
+                let formattedMessages: messagesType["messages"] = [];
+                console.log("Retrieved Notes from DB")
+                if (value) {
+                    for (let _message of value) {
+                        _message.notes.map((message) => {
+                            formattedMessages.push([message[0], message[1]]);
+                        })
+                    }
+                }
+                setMessages(formattedMessages);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            }
+        )
+        console.log("Finished");
+    }
+
+    async function storeAllMessages() {
+        console.log("Storing all the messages");
+        let formatMessages: string[][] = [];
+        for (let message of messages) {
+            let convertToStringArray: string[] = [message[0], message[1]];
+            formatMessages.push(convertToStringArray);
+        }
+        await updateKey(video.url, formatMessages);
+    }
+
+    async function storeNewMessage(newMessage: string[]) {
+        console.log("Storing the new message!");
+        await append(video.url, newMessage);
+    }
+
+
+    useEffect(() => {
+        getValues();
+    }, [])
+
     useLayoutEffect(() => {
         scrollToBottomMessage()
     }, [messages]);
+
+    const seekToTime = (timestamp: string): void => {
+        let beginTime = timestamp;
+        console.log(`Seeking to ${beginTime}`)
+        if (player) {
+            player.seekTo(parseFloat(beginTime), true);
+        }
+    }
+
+    const memoizedSeekToTime = useCallback(seekToTime, [messages]);
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
         if (event.key === "Enter") {
@@ -63,14 +113,16 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             if (!input.text) {
                 return;
             }
-
             let endTime = getCurrentTime();
-            // getTimestamp(parseInt(input.beginTime))
-            // (endTime) ? getTimestamp(endTime) : ""
+            let newMessage: messageType = [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text];
+            
             setMessages([
                 ...messages,
-                [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text]
+                newMessage
             ])
+
+            storeNewMessage([newMessage[0], newMessage[1]]);
+
             setInput({
                 beginTime: "",
                 text: "",
@@ -93,19 +145,7 @@ const Card: React.FC<cardProps> = ({ video, messages, setMessages }) => {
             beginTime: event.target.value
         })
     }
-
-    const seekToTime = (timestamp: string): (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => void => {
-        let beginTime = timestamp;
-        console.log(`Seeking to ${beginTime}`)
-        return (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>): void => {
-            if (player) {
-                player.seekTo(parseFloat(beginTime), true);
-            }
-        }
-    }
     
-
-
     const renderCard = () => {
         return (
             <>
