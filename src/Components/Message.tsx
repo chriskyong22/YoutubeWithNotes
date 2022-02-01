@@ -1,6 +1,6 @@
 import React from "react"
 import { getTimestamp } from "../Utilities/helper"
-import { messageType } from "../App"
+import { messageType } from "./Card"
 
 interface messageProps {
     message: messageType;

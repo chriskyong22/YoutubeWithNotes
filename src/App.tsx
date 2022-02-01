@@ -9,15 +9,6 @@ export interface videoType {
   id: string;
 }
 
-export interface messageType {
-  0: string;
-  1: string;
-}
-
-export interface messagesType {
-  messages: messageType[];
-}
-
 export interface videosType{
   videos: videoType[];
 }
@@ -32,17 +23,13 @@ function App() {
     // url: "https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3",
     id: "someHash"
   }]);
-  
-  const [messages, setMessages] = useState<messagesType["messages"]>([
-    ["0-", "TestMessage"]
-  ])
 
   return (
     <>
       <h1 className="CenterNoWidth">
         Youtube with Chat
       </h1>
-      <List videos={videos} messages={messages} setMessages={setMessages} favorites={favorites} setFavorites={setFavorites}/>
+      <List videos={videos} favorites={favorites} setFavorites={setFavorites}/>
       <Form videos={videos} setVideos={setVideos}/>    
     </>
   );

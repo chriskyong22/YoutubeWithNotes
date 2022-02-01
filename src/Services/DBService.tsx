@@ -1,5 +1,4 @@
 import { openDB, DBSchema } from "idb";
-import { messageType } from "../App";
 
 const DATABASE_NAME = `VIDEONOTESDB`
 const tableName = `videosNotesTable`;
