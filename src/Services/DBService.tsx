@@ -5,6 +5,11 @@ const DATABASE_NAME = `VIDEONOTESDB`
 const tableName = `videosNotesTable`;
 const DATABASE_VERSION = 1
 
+export interface DbRow {
+    'url': string;
+    'notes': messagesType["messages"];
+}
+
 interface MyDB extends DBSchema {
     'videosNotesTable': {
         key: string;

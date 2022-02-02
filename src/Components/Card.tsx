@@ -19,7 +19,6 @@ const Card: React.FC<cardProps> = ({ video }) => {
                         setPlayer={setPlayer}
                         url={video.url}
                     />
-                    <button>Add to Favorites</button>
                 </div>
                 <ChatboxContainer
                     player={player}

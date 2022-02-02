@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { MemoizedChatbox } from "./Chatbox";
 import { videoType } from "../App"
-import { MemoizedMessage } from "./Message"
+import { MemoizedMessage, Message } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
+import { ChatboxHeader } from "./ChatboxHeader";
 
 export interface messageType {
     message: [string, string];
@@ -33,11 +34,14 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     const deleteMessage = (message: messageType["message"]): void => {
         console.log(messages);
-        let filteredMessages = messages.filter((_message) => {
-            return _message !== message;
+        setMessages((oldMessages) => {
+            let filteredMessages = oldMessages.filter((_message) => {
+                return _message !== message;
+            })
+            updateKey(video.url, filteredMessages);
+            console.log(filteredMessages);
+            return filteredMessages;
         })
-        console.log(filteredMessages);
-        setMessages(filteredMessages);
     }
 
     // Dependent on messages and player (if player is not loaded in, the onClick functions won't work till seekTime is updated)
@@ -45,6 +49,14 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     const memoizedDeleteMessage = useCallback(deleteMessage, [messages]);
 
+    // For performance issues - more messages === more render time thus 
+    // should create a fixed number of messages to render and if the user 
+    // scrolls up/down, we debounce and load the 
+    // next N messages or previous N messages
+
+    // Also we should be using unique ids instead of idx
+    // otherwise React will rerender our MessageComponents
+    // even if they have not changed 
     const renderMessages = (): JSX.Element[] => {
         return messages.map((message, idx) => {
             return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
@@ -91,6 +103,8 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
                     })
                 }
                 setMessages(formattedMessages);
+        }).catch((error) => {
+            console.log(`[getValues ERROR]: ${error}`)
         })
         console.log("Finished retrieving the notes");
     }
@@ -110,8 +124,11 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     return (
         <div className="ListItemChatContainer">
+            <ChatboxHeader
+                video={video}
+                setMessages={setMessages}
+            />
             <div className="ListItemMessagesArea Scrollable-Element">
-                <p>Chatroom</p>
                 {renderMessages()}
                 <div className="ListItemLastMessage"/> 
                 {//ref={messagesEndRef}
