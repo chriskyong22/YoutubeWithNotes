@@ -118,6 +118,9 @@
 }
 
 .ListItemMessage {
+  
+  position: relative;
+
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -136,13 +139,12 @@
   background-color: rgb(175, 192, 209);
 }
 
-
 .ListItemMessageContainer:hover {
   background-color: rgb(140, 161, 182);
 }
 
 .ListItemMessageTimestamp:hover {
-  background-color: white;
+  background-color: rgb(175, 192, 209);
   cursor: pointer;
 }
 
