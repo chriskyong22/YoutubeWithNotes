@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { videoType, videosType} from "../App"
 
 interface parameters {
-    videos: videosType["videos"];
     setVideos: React.Dispatch<React.SetStateAction<videoType[]>>;
 }
 
@@ -12,7 +11,7 @@ interface inputType {
     id: string;
 }
 
-const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => { 
+const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => { 
     
     const [input, setInput] = useState<inputType>({
         title: "",
@@ -33,8 +32,8 @@ const Form: React.FC<parameters> = ({ videos, setVideos }): JSX.Element => {
             return; 
         }
 
-        setVideos([
-            ...videos,
+        setVideos((oldVideos) => [
+            ...oldVideos,
             {
                 title: input.title,
                 url: input.url,

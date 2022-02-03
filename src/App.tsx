@@ -28,13 +28,13 @@ function App() {
   return (
     <>
       <h1 className="CenterNoWidth">
-        Youtube with Chat
+        Youtube with Notes
       </h1>
       <List videos={videos} favorites={favorites} setFavorites={setFavorites}/>
       <ListFooter
         setVideos={setVideos}
       />
-      <Form videos={videos} setVideos={setVideos}/>    
+      <Form setVideos={setVideos}/>    
     </>
   );
 }

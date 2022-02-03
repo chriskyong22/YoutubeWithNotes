@@ -20,6 +20,7 @@ export const ListFooter: React.FC<ListFooterProps> = ({ setVideos }): JSX.Elemen
                         }));
                     })
                     console.log(notLoadedVideos);
+                    // TODO: Fix it to get the title/id from the DB
                     notLoadedVideos.forEach((video) => {
                         allVideos.push({
                             'title': 'someTitle',

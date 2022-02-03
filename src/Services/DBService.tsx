@@ -1,6 +1,7 @@
 import { openDB, DBSchema } from "idb";
 import { messageType, messagesType } from "../Components/ChatboxContainer"
 
+// TODO: Change the schema to include ID and Title
 const DATABASE_NAME = `VIDEONOTESDB`
 const tableName = `videosNotesTable`;
 const DATABASE_VERSION = 1
