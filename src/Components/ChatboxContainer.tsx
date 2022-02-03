@@ -20,9 +20,7 @@ interface ChatBoxContainerProps {
 
 export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, video}) => {
 
-    const [messages, setMessages] = useState<messagesType["messages"]>([
-        ["0-", "TestMessage"]
-    ])
+    const [messages, setMessages] = useState<messagesType["messages"]>([])
 
     const seekToTime = (timestamp: string): void => {
         let beginTime = timestamp;
@@ -101,6 +99,9 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
                     _messages.notes.map((message) => {
                         formattedMessages.push([message[0], message[1]]);
                     })
+                }
+                if (formattedMessages.length === 0) {
+                    storeAllMessages();
                 }
                 setMessages(formattedMessages);
         }).catch((error) => {

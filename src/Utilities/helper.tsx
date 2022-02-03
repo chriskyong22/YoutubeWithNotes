@@ -27,7 +27,7 @@ const enum mimeTypes {
  * @returns HH-MM-SS or MM-SS timestamp
  */
 export const getTimestamp: twoTypes<number, string> = (seconds) => {
-    // console.log(seconds);
+    console.log(seconds);
     if (seconds < secondConversions.hour) {
         return new Date(seconds * secondConversions.millisecond).toISOString().substr(14, 5);
     } else {
