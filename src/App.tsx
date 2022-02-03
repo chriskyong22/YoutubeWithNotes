@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import List from "./Components/List"
 import Form from "./Components/Form"
+import { ListFooter } from "./Components/ListFooter"
 
 export interface videoType {
   title: string;
@@ -30,6 +31,9 @@ function App() {
         Youtube with Chat
       </h1>
       <List videos={videos} favorites={favorites} setFavorites={setFavorites}/>
+      <ListFooter
+        setVideos={setVideos}
+      />
       <Form videos={videos} setVideos={setVideos}/>    
     </>
   );

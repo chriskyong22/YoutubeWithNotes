@@ -1,3 +1,4 @@
+import { time } from "console";
 import React from "react"
 import { getTimestamp, copyToClipboard } from "../Utilities/helper"
 import { messageType } from "./ChatboxContainer"
@@ -15,10 +16,10 @@ export const Message: React.FC<messageProps> = ({ message, seekFunction, deleteM
     let timestamp = `[${getTimestamp(parseFloat(beginTime))}${endTime != "" ? " - " + getTimestamp(parseFloat(endTime)) : ""}]`
     return (
         <div className="ListItemMessage">
-            <button onClick={() => deleteMessage(message)} className="ListItemMessageDeleteBtn">
+            <button onClick={() => deleteMessage(message)} title={"Delete Note"} className="ListItemMessageDeleteBtn">
                 [D]
             </button>
-            <div className="ListItemMessageTimestamp" onClick={() => seekFunction(beginTime)}>
+            <div className="ListItemMessageTimestamp" title={`Go to ${timestamp}`}onClick={() => seekFunction(beginTime)}>
                 {timestamp}
             </div>
             <div className="ListItemMessageText" onClick={copyToClipboard}>
