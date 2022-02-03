@@ -107,3 +107,9 @@ export const importKey = (callback: (fileList: DbRow) => void): void => {
     }
     fileElement.click();
 }
+
+export const copyToClipboard = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+    navigator.clipboard.writeText(event.currentTarget.innerHTML).catch((error) => {
+        console.log(`[COPY TO CLIPBOARD ERROR] ${error}`)
+    })
+}

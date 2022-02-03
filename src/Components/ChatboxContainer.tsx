@@ -3,7 +3,7 @@ import { MemoizedChatbox } from "./Chatbox";
 import { videoType } from "../App"
 import { MemoizedMessage, Message } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
-import { ChatboxHeader } from "./ChatboxHeader";
+import { MemoizedChatboxHeader } from "./ChatboxHeader";
 
 export interface messageType {
     message: [string, string];
@@ -120,11 +120,11 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     useLayoutEffect(() => {
         scrollToBottomMessageWithoutRef();
-    }, [messages, player]);
+    }, [player]);
 
     return (
         <div className="ListItemChatContainer">
-            <ChatboxHeader
+            <MemoizedChatboxHeader
                 video={video}
                 setMessages={setMessages}
             />

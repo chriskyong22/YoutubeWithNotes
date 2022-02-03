@@ -3,6 +3,7 @@ import { videoType } from "../App";
 import { getKey, updateKey } from "../Services/DBService"
 import { exportKey, importKey } from "../Utilities/helper"
 import { DbRow } from "../Services/DBService"
+import { MemoizedChatbox } from "./Chatbox";
 
 interface ChatboxHeaderProps {
     video: videoType
@@ -10,7 +11,7 @@ interface ChatboxHeaderProps {
 }
 
 export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages }) => {
-
+    console.log("Rerendering the Chatbox Header");
     const exportNotes = () => {
         exportKey(video.url);
     }
@@ -58,3 +59,5 @@ export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages
         </div>
     )
 }
+
+export const MemoizedChatboxHeader = React.memo(ChatboxHeader);

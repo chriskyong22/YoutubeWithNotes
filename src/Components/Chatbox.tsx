@@ -51,6 +51,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
                 text: "",
                 endTime: ""
             });
+            
         }
     }
 

@@ -79,6 +79,7 @@
   opacity: 0.8;
 }
 
+
 .ListItemChatBoxHeaderBtn:hover {
   background-color: rgb(140, 161, 182);
 }
@@ -97,7 +98,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.1rem;
 }
 
 .ListItemSendMessages {
@@ -112,10 +113,6 @@
   resize: none;
 }
 
-.ListItemLastMessage {
-  background-color: red;
-}
-
 .ListItemMessageContainer {
   width: 100%;
 }
@@ -124,8 +121,21 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
+
+.ListItemMessageDeleteBtn {
+  background-color: inherit;
+  color: red;
+  cursor: pointer;
+  margin: 0;
+  border: none;
+}
+
+.ListItemMessageDeleteBtn:hover {
+  background-color: rgb(175, 192, 209);
+}
+
 
 .ListItemMessageContainer:hover {
   background-color: rgb(140, 161, 182);
@@ -133,11 +143,19 @@
 
 .ListItemMessageTimestamp:hover {
   background-color: white;
+  cursor: pointer;
 }
 
+.ListItemMessageText:hover {
+  cursor: copy;
+}
 
 .ListItemSendMessages:active, .ListItemSendMessages:focus {
   background-color:white;
+}
+
+.ListItemLastMessage {
+  background-color: red;
 }
 
 .Youtube-Iframe {

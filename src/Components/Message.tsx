@@ -1,5 +1,5 @@
 import React from "react"
-import { getTimestamp } from "../Utilities/helper"
+import { getTimestamp, copyToClipboard } from "../Utilities/helper"
 import { messageType } from "./ChatboxContainer"
 
 interface messageProps {
@@ -15,13 +15,13 @@ export const Message: React.FC<messageProps> = ({ message, seekFunction, deleteM
     let timestamp = `[${getTimestamp(parseFloat(beginTime))}${endTime != "" ? " - " + getTimestamp(parseFloat(endTime)) : ""}]`
     return (
         <div className="ListItemMessage">
+            <button onClick={() => deleteMessage(message)} className="ListItemMessageDeleteBtn">
+                [D]
+            </button>
             <div className="ListItemMessageTimestamp" onClick={() => seekFunction(beginTime)}>
                 {timestamp}
             </div>
-            <button onClick={() => deleteMessage(message)}>
-                    Delete
-            </button>
-            <div>
+            <div className="ListItemMessageText" onClick={copyToClipboard}>
                 {message[1]}
             </div>
         </div>
