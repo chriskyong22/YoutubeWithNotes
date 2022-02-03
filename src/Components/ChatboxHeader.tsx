@@ -33,7 +33,7 @@ export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages
         <div className="ListItemChatboxHeader"> 
             <div>
                 [
-                <button onClick={importNotes}className="ListItemChatBoxHeaderBtn">
+                <button onClick={importNotes} className="ListItemChatBoxHeaderBtn">
                     Import
                 </button>
                     |

@@ -48,34 +48,65 @@ const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => {
         })
     }
 
+
+    const [showFormCSS, setShowFormCSS] = useState({
+        display: 'none'
+    })
+
+    const showForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+        setShowFormCSS({
+            display: 'block'
+        })
+    }
+
+    const closeForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+        setShowFormCSS({
+            display: 'none'
+        })
+    }
+
     return (
-        <div className="FormContainer">
-            <input 
-                type="text"
-                placeholder="Title"
-                name="title"
-                value={input.title}
-                onChange={handleChange}
-            />
-            <input
-                type="text"
-                placeholder="URL"
-                name="url"
-                value={input.url}
-                onChange={handleChange}
-            />
-            <input
-                placeholder="Enter ID"
-                name="id"
-                value={input.id}
-                onChange={handleChange}
-            />
-            <button
-                onClick={handleSubmit}
-            >
-                Submit
+        <>
+            <button className="OpenFormBtn" onClick={showForm}>
+                Add Video
             </button>
-        </div>
+            <div className="FormPopup" style={showFormCSS}>
+                <div className="FormContainer">
+                    <input 
+                        type="text"
+                        placeholder="Title"
+                        name="title"
+                        value={input.title}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="text"
+                        placeholder="URL"
+                        name="url"
+                        value={input.url}
+                        onChange={handleChange}
+                    />
+                    <input
+                        placeholder="Enter ID"
+                        name="id"
+                        value={input.id}
+                        onChange={handleChange}
+                    />
+                    <button
+                        className="FormSubmit"
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </button>
+                    <button
+                        className="FormCancel"
+                        onClick={closeForm}
+                    >
+                        Close
+                    </button>
+                </div>  
+            </div>
+        </>
     )
 }
 
