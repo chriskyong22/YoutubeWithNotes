@@ -37,8 +37,10 @@ export const getTimestamp: twoTypes<number, string> = (seconds) => {
 
 
 export const createJSONFromObjectStore = (messages: void | {
+    id: string;
     url: string;
-    notes: [string, string][];
+    title: string;
+    notes: messagesType["messages"];
 } | undefined): string => {
     if (messages) {
         return JSON.stringify(messages);
@@ -76,7 +78,7 @@ export const downloadBlob = (blob: Blob | MediaSource, fileName: string): void =
  * @param key the URL to search in the DB
  */
 export const exportKey = (key: string): void => {
-    let fileName = key.split('?')[0].split('/').at(-1);
+    let fileName = key.split('=')[1];
     getKey(key).then((messages) => {
         return createJSONFromObjectStore(messages);
     }).then((stringifiedObjectStore) => {
@@ -112,4 +114,13 @@ export const copyToClipboard = (event: React.MouseEvent<HTMLDivElement, MouseEve
     navigator.clipboard.writeText(event.currentTarget.innerHTML).catch((error) => {
         console.log(`[COPY TO CLIPBOARD ERROR] ${error}`)
     })
+}
+
+
+
+export const convertToValidURL = (url: string): string => {
+    const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube.com/embed/'
+    const enableJSAPI = '?enablejsapi=1';
+    const YOUTUBE_ID = url.split('=')[1];
+    return `${YOUTUBE_EMBED_BASE_URL}${YOUTUBE_ID}${enableJSAPI}`
 }

@@ -1,13 +1,13 @@
 import React from "react";
 import { videoType } from "../App";
-import { getKey, updateKey } from "../Services/DBService"
+import { updateKey } from "../Services/DBService"
 import { exportKey, importKey } from "../Utilities/helper"
 import { DbRow } from "../Services/DBService"
-import { MemoizedChatbox } from "./Chatbox";
+import { messagesType } from "./ChatboxContainer";
 
 interface ChatboxHeaderProps {
     video: videoType
-    setMessages: React.Dispatch<React.SetStateAction<[string, string][]>>
+    setMessages: React.Dispatch<React.SetStateAction<messagesType["messages"]>>
 }
 
 export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages }) => {
@@ -22,7 +22,7 @@ export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages
 
     const importNotesCallback = (tbRow: DbRow) => {
         if (tbRow.url !== '') {
-            updateKey(tbRow.url, tbRow.notes);
+            updateKey(video, tbRow.notes);
             if (video.url === tbRow.url) {
                 setMessages(tbRow.notes);
             }

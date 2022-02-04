@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
+import { convertToValidURL } from "../Utilities/helper"
 
 interface YoutubeProps{
+    id: string,
     url: string,
     setPlayer: React.Dispatch<React.SetStateAction<YT.Player | undefined>>;
 }
@@ -9,8 +11,8 @@ declare global {
     function onYouTubeIframeAPIReady(): void;
 }
 
-export const YoutubeIframe: React.FC<YoutubeProps> = ({ url, setPlayer}) => {
-    const videoUniqueID = `Youtube-Iframe-${url}`;
+export const YoutubeIframe: React.FC<YoutubeProps> = ({ id, url, setPlayer}) => {
+    const videoUniqueID = `Youtube-Iframe-${id}`;
 
     const onReady = (event: YT.PlayerEvent) => {
         setPlayer(event.target); 
@@ -18,17 +20,12 @@ export const YoutubeIframe: React.FC<YoutubeProps> = ({ url, setPlayer}) => {
     }
 
     const loadVideo = () => {
-        console.log("Setting the object!")
         console.log("Setting up the new player")
-        let newPlayer = new window.YT.Player(videoUniqueID, {
+        new window.YT.Player(videoUniqueID, {
             events: {
                 'onReady': onReady
             }
         })
-        if (newPlayer.getCurrentTime === undefined) {
-            console.log(document.getElementById(videoUniqueID))
-        }
-        console.log(newPlayer.getCurrentTime);
     }
 
     useEffect(() => {
@@ -37,6 +34,7 @@ export const YoutubeIframe: React.FC<YoutubeProps> = ({ url, setPlayer}) => {
             console.log("Script already exist!")
             loadVideo()
         } else {
+            console.log("Setup Player")
             // Creating the tag
             const tag = document.createElement('script')
             tag.src = "https://www.youtube.com/iframe_api"
@@ -46,14 +44,14 @@ export const YoutubeIframe: React.FC<YoutubeProps> = ({ url, setPlayer}) => {
             if (firstScriptTag.parentNode) {
                 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             }
-            console.log("Setup Loading")
+            
             window.onYouTubeIframeAPIReady = loadVideo;
         }
     }, [])
 
     return (
         <iframe 
-            src={url}
+            src={convertToValidURL(url)}
             allow="encrypted-media"
             // width={video.url.indexOf("youtube") == -1 ? "300" : "100%"}
             // height={video.url.indexOf("youtube") == -1 ? "380" : "75%"}

@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { videoType, videosType} from "../App"
+import { v4 as uuidv4 } from 'uuid';
 
 interface parameters {
     setVideos: React.Dispatch<React.SetStateAction<videoType[]>>;
@@ -8,7 +9,6 @@ interface parameters {
 interface inputType {
     title: string;
     url: string;
-    id: string;
 }
 
 const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => { 
@@ -16,7 +16,6 @@ const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => {
     const [input, setInput] = useState<inputType>({
         title: "",
         url: "",
-        id: ""
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -28,7 +27,10 @@ const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => {
 
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         
-        if (!input.title || !input.url) {
+        if (!input.title ||
+                !input.url ||
+                input.url.indexOf('youtube') == -1 ||
+                input.url.indexOf('=') == -1) {
             return; 
         }
 
@@ -37,14 +39,13 @@ const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => {
             {
                 title: input.title,
                 url: input.url,
-                id: input.id
+                id: uuidv4()
             }
         ])
 
         setInput({
             title: "",
             url: "",
-            id: ""
         })
     }
 
@@ -84,12 +85,6 @@ const Form: React.FC<parameters> = ({ setVideos }): JSX.Element => {
                         placeholder="URL"
                         name="url"
                         value={input.url}
-                        onChange={handleChange}
-                    />
-                    <input
-                        placeholder="Enter ID"
-                        name="id"
-                        value={input.id}
                         onChange={handleChange}
                     />
                     <button

@@ -3,6 +3,7 @@ import { messagesType, messageType } from "./ChatboxContainer"
 import { videoType } from "../App"
 import { getTimestamp } from "../Utilities/helper"
 import { append } from "../Services/DBService"
+import { v4 as uuidv4 } from "uuid"
 
 interface inputState {
     beginTime: string;
@@ -30,7 +31,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
 
     const storeNewMessage = async (newMessage: messageType["message"]): Promise<void> => {
         console.log("Storing the new message!");
-        await append(video.url, newMessage);
+        await append(video, newMessage);
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
@@ -40,11 +41,15 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
                 return;
             }
             let endTime = getCurrentTime();
-            let newMessage: messageType["message"] = [`${input.beginTime}-${(endTime) ? endTime : ""}`, input.text];
+            let newMessage: messageType["message"] = [
+                `${input.beginTime}-${(endTime) ? endTime : ""}`,
+                input.text,
+                uuidv4()
+            ];
             
             setMessages((oldMessages) => [...oldMessages, newMessage])
 
-            storeNewMessage([newMessage[0], newMessage[1]]);
+            storeNewMessage(newMessage);
 
             setInput({
                 beginTime: "",
@@ -56,10 +61,13 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        setInput({
-            ...input,
-            beginTime: input.beginTime === "" ? getCurrentTime() + "" : input.beginTime,
-            text: event.target.value
+        
+        setInput((oldInput) => {
+            return {
+                ...oldInput,
+                beginTime: oldInput.beginTime === "" ? getCurrentTime() + "" : oldInput.beginTime,
+                text: event.target.value
+            }
         });
     }
 
@@ -84,7 +92,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
                 type="text"
                 placeholder="Beginning Timestamp [HH:MM:SS]"
                 name="beginTime"
-                value={input.beginTime !== "" ? getTimestamp(parseFloat(input.beginTime)) : ""}
+                value={input.beginTime !== "" && input.beginTime !== 'undefined' ? getTimestamp(parseFloat(input.beginTime)) : ""}
                 onChange={changeBeginningTimeStamp}
             />
         </>

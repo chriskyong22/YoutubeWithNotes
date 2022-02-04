@@ -1,12 +1,16 @@
 import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { MemoizedChatbox } from "./Chatbox";
 import { videoType } from "../App"
-import { MemoizedMessage, Message } from "./Message"
+import { MemoizedMessage } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
 import { MemoizedChatboxHeader } from "./ChatboxHeader";
 
 export interface messageType {
-    message: [string, string];
+    /* Can only use array types in DBSchema for some reason??
+        Causes errors if I change it to an object with string values 
+        The array is [timestamp, text, id]
+    */
+    message: [string, string, string]
 }
 
 export interface messagesType {
@@ -36,7 +40,7 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
             let filteredMessages = oldMessages.filter((_message) => {
                 return _message !== message;
             })
-            updateKey(video.url, filteredMessages);
+            updateKey(video, filteredMessages);
             console.log(filteredMessages);
             return filteredMessages;
         })
@@ -56,8 +60,8 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
     // otherwise React will rerender our MessageComponents
     // even if they have not changed 
     const renderMessages = (): JSX.Element[] => {
-        return messages.map((message, idx) => {
-            return (<div className="ListItemMessageContainer" key={`${message}_${idx}`}>
+        return messages.map((message) => {
+            return (<div className="ListItemMessageContainer" key={`${message}_${message[2]}`}>
                     {
                         player !== undefined ?
                         <MemoizedMessage 
@@ -92,18 +96,23 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
     }
 
     const getValues = (): void => {
-        getKey(video.url).then((_messages) => {
-                let formattedMessages: messagesType["messages"] = [];
-                console.log("Retrieved Notes from DB")
-                if (_messages) {
-                    _messages.notes.map((message) => {
-                        formattedMessages.push([message[0], message[1]]);
-                    })
-                }
-                if (formattedMessages.length === 0) {
-                    storeAllMessages();
-                }
-                setMessages(formattedMessages);
+        getKey(video.id).then((_messages) => {
+            let formattedMessages: messagesType["messages"] = [];
+            console.log("Retrieved Notes from DB")
+            if (_messages) {
+                _messages.notes.map((message) => {
+                    formattedMessages.push([
+                        message[0],
+                        message[1],
+                        message[2]
+                    ]);
+                })
+            }
+            if (formattedMessages.length === 0) {
+                console.log("New video detected, updating DB")
+                storeAllMessages();
+            }
+            setMessages(formattedMessages);
         }).catch((error) => {
             console.log(`[getValues ERROR]: ${error}`)
         })
@@ -112,7 +121,7 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     const storeAllMessages = async (): Promise<void> => {
         console.log("Storing all the messages");
-        await updateKey(video.url, messages);
+        await updateKey(video, messages);
     }
 
     useEffect(() => {

@@ -18,6 +18,7 @@ const Card: React.FC<cardProps> = ({ video }) => {
                     <YoutubeIframe
                         setPlayer={setPlayer}
                         url={video.url}
+                        id={video.id}
                     />
                 </div>
                 <ChatboxContainer

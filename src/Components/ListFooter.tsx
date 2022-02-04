@@ -16,16 +16,16 @@ export const ListFooter: React.FC<ListFooterProps> = ({ setVideos }): JSX.Elemen
                 if (DbRows) {
                     let notLoadedVideos = DbRows.filter((row) => {
                         return !(alreadyLoadedVideos.some((loadedVideo) => {
-                            return loadedVideo.url === row.url;
+                            return loadedVideo.id === row.id;
                         }));
                     })
                     console.log(notLoadedVideos);
                     // TODO: Fix it to get the title/id from the DB
                     notLoadedVideos.forEach((video) => {
                         allVideos.push({
-                            'title': 'someTitle',
+                            'title': video.title,
                             'url': video.url,
-                            'id': 'someUniqueID'
+                            'id': video.id
                         })
                     })
                 }

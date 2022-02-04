@@ -12,9 +12,9 @@ const List: React.FC<listProps> = ( { videos, favorites, setFavorites } ) => {
     
 
     const renderItems = (): JSX.Element[] => {
-        return videos.map((video, idx) => {
+        return videos.map((video) => {
             return (
-                <li className="ListItemContainer" key={idx}>
+                <li className="ListItemContainer" key={video.id}>
                     <Card 
                         video={video}
                     />
