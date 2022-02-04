@@ -1,5 +1,5 @@
 import { messagesType } from "../Components/ChatboxContainer";
-import { getKey } from "../Services/DBService";
+import { getAll, getKey } from "../Services/DBService";
 import { DbRow } from "../Services/DBService"
 
 interface sameType<S> {
@@ -16,7 +16,7 @@ const enum secondConversions {
     millisecond = 1000
 }
 
-const enum mimeTypes {
+export const enum mimeTypes {
     JSON = 'application/json',
 }
 
@@ -77,8 +77,8 @@ export const downloadBlob = (blob: Blob | MediaSource, fileName: string): void =
  * performance improvements 
  * @param key the URL to search in the DB
  */
-export const exportKey = (key: string): void => {
-    let fileName = key.split('=')[1];
+export const exportKey = (key: string, url: string): void => {
+    let fileName = url.split('=')[1];
     getKey(key).then((messages) => {
         return createJSONFromObjectStore(messages);
     }).then((stringifiedObjectStore) => {
@@ -90,25 +90,38 @@ export const exportKey = (key: string): void => {
     })
 }
 
-export const importKey = (callback: (fileList: DbRow) => void): void => {
+const openFilePopUp = (callback: (files: FileList) => Promise<void> | void): void => {
     let fileElement = document.createElement('input');
     fileElement.setAttribute('type', 'file');
-    fileElement.onchange = async (event) => {
-        const selectedFile = fileElement.files;
-        if (selectedFile && selectedFile[0].type === mimeTypes.JSON) {
-            let text = await selectedFile[0].text();
-            let object: DbRow = JSON.parse(text);
-            // For further safety, we can check the type of each 
-            // element in the 'notes' property to ensure it is
-            // a string array with two values.
-            if (object.hasOwnProperty('notes') && 
-                object.hasOwnProperty('url')) {
-                callback(object);
-            }
+    fileElement.onchange = (event) => {
+        const selectedFiles = fileElement.files;
+        if (selectedFiles) { 
+            callback(selectedFiles);
         }
     }
     fileElement.click();
 }
+
+export const importKey = (callback: (fileList: FileList) => void): void => {
+    openFilePopUp(callback);
+}
+
+export const exportDatabase = () => {
+    getAll().then((rows) => {
+        return JSON.stringify(rows);
+    }).then((stringifiedRows) => {
+        return createBlobFromJSON(stringifiedRows);
+    }).then((rowsBlob) => {
+        downloadBlob(rowsBlob, 'notesDatabase.json')
+    }).catch((error) => {
+        console.log(`[EXPORT DATABASE ERROR]: ${error}`)
+    })
+}
+
+export const importDatabase = (callback: (fileList: FileList) => void): void => {
+    openFilePopUp(callback);
+}
+
 
 export const copyToClipboard = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     navigator.clipboard.writeText(event.currentTarget.innerHTML).catch((error) => {

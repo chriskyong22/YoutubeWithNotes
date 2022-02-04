@@ -102,3 +102,8 @@ export const append = async (video: videoType, newNote: messageType["message"]) 
         updateKey(video, [newNote]);
     }
 }
+
+export const databaseJSON = async () => {
+    let databaseJSONIFIED = JSON.stringify(await getAll());
+    return databaseJSONIFIED;
+}
