@@ -140,3 +140,4 @@ export const getAllStoredVideos = async (): Promise<DbRow[]> => {
     let DbRows: (DbRow[] | void) = await getAll();
     return DbRows || [];
 }
+

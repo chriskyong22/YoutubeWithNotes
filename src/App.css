@@ -218,11 +218,11 @@
   box-sizing: border-box;
   border: 3px solid #f1f1f1;
   z-index: 9;
+  border-radius: 3px;
 }
 
 .FormContainer {
   background-color: white;
-
   display: flex;
   flex-direction: column;
   gap: 0.50rem;
