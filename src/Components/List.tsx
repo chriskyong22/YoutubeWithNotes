@@ -1,5 +1,5 @@
 import React from "react"
-import { videosType, videoType } from "../App"
+import { videosType, videoType } from "../Models/Video"
 import Card from "./Card"
 
 interface listProps {

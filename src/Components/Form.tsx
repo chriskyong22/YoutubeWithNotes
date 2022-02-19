@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { videoType, videosType} from "../App"
+import { videoType, videosType} from "../Models/Video"
 import { v4 as uuidv4 } from 'uuid';
 
 interface parameters {

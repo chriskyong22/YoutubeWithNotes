@@ -1,11 +1,11 @@
 import React from "react"
 import { getTimestamp, copyToClipboard } from "../Utilities/helper"
-import { messageType } from "./ChatboxContainer"
+import { noteType } from "../Models/Note"
 
 interface messageProps {
-    message: messageType["message"];
+    message: noteType["note"];
     seekFunction: (timestamp: string) => void;
-    deleteMessage: (message: messageType["message"]) => void;
+    deleteMessage: (message: noteType["note"]) => void;
 }
 
 export const Message: React.FC<messageProps> = ({ message, seekFunction, deleteMessage }): JSX.Element => {

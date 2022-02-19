@@ -1,13 +1,13 @@
 import React from "react";
-import { videoType } from "../App";
+import { videoType } from "../Models/Video";
 import { updateKey } from "../Services/DBService"
 import { exportKey, importKey, exportDatabase, importDatabase as importDB, mimeTypes } from "../Utilities/helper"
 import { DbRow } from "../Services/DBService"
-import { messagesType } from "./ChatboxContainer";
+import { notesType } from "../Models/Note"
 
 interface ChatboxHeaderProps {
     video: videoType
-    setMessages: React.Dispatch<React.SetStateAction<messagesType["messages"]>>
+    setMessages: React.Dispatch<React.SetStateAction<notesType["notes"]>>
 }
 
 export const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({ video, setMessages }) => {

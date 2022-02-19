@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react"
-import { messagesType, messageType } from "./ChatboxContainer"
-import { videoType } from "../App"
+import { notesType, noteType } from "../Models/Note"
+import { videoType } from "../Models/Video"
 import { getTimestamp } from "../Utilities/helper"
 import { append } from "../Services/DBService"
 import { v4 as uuidv4 } from "uuid"
@@ -14,7 +14,7 @@ interface inputState {
 interface chatBoxProps { 
     player: YT.Player | undefined;
     video: videoType;
-    setMessages: React.Dispatch<React.SetStateAction<messagesType["messages"]>>
+    setMessages: React.Dispatch<React.SetStateAction<notesType["notes"]>>
 }
 
 export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): JSX.Element => {
@@ -29,7 +29,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
         endTime: ""
     })
 
-    const storeNewMessage = async (newMessage: messageType["message"]): Promise<void> => {
+    const storeNewMessage = async (newMessage: noteType["note"]): Promise<void> => {
         console.log("Storing the new message!");
         await append(video, newMessage);
     }
@@ -42,7 +42,7 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
             }
             console.log(input.beginTime);
             let endTime = getCurrentTime();
-            let newMessage: messageType["message"] = [
+            let newMessage: noteType["note"] = [
                 `${input.beginTime}-${(endTime) ? endTime : ""}`,
                 input.text,
                 uuidv4()
@@ -147,7 +147,6 @@ export const Chatbox: React.FC<chatBoxProps> = ({player, video, setMessages}): J
 
     const processChange = useCallback(debounce(changeBeginningTimeStamp), []);
     
-
     const isNumber = (s: string): boolean => {
         return !isNaN(Number(s)) && s !== '';
     }

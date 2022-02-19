@@ -1,6 +1,6 @@
 import { openDB, DBSchema } from "idb";
-import { videoType } from "../App";
-import { messageType, messagesType } from "../Components/ChatboxContainer"
+import { videoType } from "../Models/Video";
+import { noteType, notesType } from "../Models/Note"
 
 // TODO: Change the schema to include ID and Title
 const DATABASE_NAME = `VIDEONOTESDB`
@@ -11,7 +11,7 @@ export interface DbRow {
     'id': string;
     'url': string;
     'title': string;
-    'notes': messagesType["messages"];
+    'notes': notesType["notes"];
 }
 
 interface MyDB extends DBSchema {
@@ -21,13 +21,13 @@ interface MyDB extends DBSchema {
             'id': string;
             'url': string;
             'title': string;
-            'notes': messagesType["messages"];
+            'notes': notesType["notes"];
         };
         indexes: {
             'id': string;
             'url': string;
             'title': string;
-            'notes': messagesType["messages"];
+            'notes': notesType["notes"];
         }
     }
 }
@@ -80,7 +80,7 @@ export const deleteKey = async (key: string) => {
     })
 }
 
-export const updateKey = async (video: videoType,  notes: messagesType["messages"]) => {    
+export const updateKey = async (video: videoType,  notes: notesType["notes"]) => {    
     return dbPromise.then(db => {
         return db.transaction(tableName, transactionModes.READWRITE).objectStore(tableName).put({
             id: video.id,
@@ -93,7 +93,7 @@ export const updateKey = async (video: videoType,  notes: messagesType["messages
     })
 }
 
-export const append = async (video: videoType, newNote: messageType["message"]) => {
+export const append = async (video: videoType, newNote: noteType["note"]) => {
     let oldNotes = await getKey(video.id);
     if (oldNotes) {
         oldNotes.notes.push(newNote);

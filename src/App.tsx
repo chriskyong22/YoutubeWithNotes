@@ -3,16 +3,7 @@ import './App.css';
 import List from "./Components/List"
 import Form from "./Components/Form"
 import { ListFooter } from "./Components/ListFooter"
-
-export interface videoType {
-  title: string;
-  url: string;
-  id: string;
-}
-
-export interface videosType{
-  videos: videoType[];
-}
+import { videosType } from "./Models/Video"
 
 function App() {
 

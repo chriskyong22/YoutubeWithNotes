@@ -1,5 +1,5 @@
 import React from "react"
-import { videosType } from "../App" 
+import { videosType } from "../Models/Video" 
 import { DbRow, getAll } from "../Services/DBService"
 
 interface ListFooterProps {
@@ -20,7 +20,6 @@ export const ListFooter: React.FC<ListFooterProps> = ({ setVideos }): JSX.Elemen
                         }));
                     })
                     console.log(notLoadedVideos);
-                    // TODO: Fix it to get the title/id from the DB
                     notLoadedVideos.forEach((video) => {
                         allVideos.push({
                             'title': video.title,

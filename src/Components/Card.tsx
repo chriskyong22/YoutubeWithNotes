@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect, useCallback } from "react"
-import { videoType } from "../App"
+import { videoType } from "../Models/Video"
 import { YoutubeIframe } from "./YoutubeIframe"
 import { ChatboxContainer } from "./ChatboxContainer"
 

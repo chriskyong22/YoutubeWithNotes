@@ -1,21 +1,10 @@
 import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { MemoizedChatbox } from "./Chatbox";
-import { videoType } from "../App"
+import { videoType } from "../Models/Video"
 import { MemoizedMessage } from "./Message"
 import { getKey, getAll, updateKey, deleteKey, append } from "../Services/DBService"
 import { MemoizedChatboxHeader } from "./ChatboxHeader";
-
-export interface messageType {
-    /* Can only use array types in DBSchema for some reason??
-        Causes errors if I change it to an object with string values 
-        The array is [timestamp, text, id]
-    */
-    message: [string, string, string]
-}
-
-export interface messagesType {
-    messages: messageType["message"][];
-}
+import { notesType, noteType } from "../Models/Note"
 
 interface ChatBoxContainerProps {
     player: YT.Player | undefined;
@@ -24,7 +13,7 @@ interface ChatBoxContainerProps {
 
 export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, video}) => {
 
-    const [messages, setMessages] = useState<messagesType["messages"]>([])
+    const [messages, setMessages] = useState<notesType["notes"]>([])
 
     const seekToTime = (timestamp: string): void => {
         let beginTime = timestamp;
@@ -34,7 +23,7 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
         }
     }
 
-    const deleteMessage = (message: messageType["message"]): void => {
+    const deleteMessage = (message: noteType["note"]): void => {
         console.log(messages);
         setMessages((oldMessages) => {
             let filteredMessages = oldMessages.filter((_message) => {
@@ -97,7 +86,7 @@ export const ChatboxContainer: React.FC<ChatBoxContainerProps> = ({ player, vide
 
     const getValues = (): void => {
         getKey(video.id).then((_messages) => {
-            let formattedMessages: messagesType["messages"] = [];
+            let formattedMessages: notesType["notes"] = [];
             console.log("Retrieved Notes from DB")
             if (_messages) {
                 _messages.notes.map((message) => {

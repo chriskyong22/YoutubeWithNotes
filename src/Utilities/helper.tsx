@@ -1,4 +1,4 @@
-import { messagesType } from "../Components/ChatboxContainer";
+import { notesType } from "../Models/Note";
 import { getAll, getKey } from "../Services/DBService";
 import { DbRow } from "../Services/DBService"
 
@@ -40,7 +40,7 @@ export const createJSONFromObjectStore = (messages: void | {
     id: string;
     url: string;
     title: string;
-    notes: messagesType["messages"];
+    notes: notesType["notes"];
 } | undefined): string => {
     if (messages) {
         return JSON.stringify(messages);
@@ -86,7 +86,7 @@ export const exportKey = (key: string, url: string): void => {
     }).then((objectStoreBlob) => {
         downloadBlob(objectStoreBlob, fileName ? fileName + '.json' : 'temp.json');
     }).catch((error) => {
-        console.log(`[EXPORT KEY ERROR]: ${error}`)
+        console.error(`[EXPORT KEY ERROR]: ${error}`)
     })
 }
 
@@ -114,7 +114,7 @@ export const exportDatabase = () => {
     }).then((rowsBlob) => {
         downloadBlob(rowsBlob, 'notesDatabase.json')
     }).catch((error) => {
-        console.log(`[EXPORT DATABASE ERROR]: ${error}`)
+        console.error(`[EXPORT DATABASE ERROR]: ${error}`)
     })
 }
 
@@ -125,15 +125,18 @@ export const importDatabase = (callback: (fileList: FileList) => void): void => 
 
 export const copyToClipboard = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     navigator.clipboard.writeText(event.currentTarget.innerHTML).catch((error) => {
-        console.log(`[COPY TO CLIPBOARD ERROR] ${error}`)
+        console.error(`[COPY TO CLIPBOARD ERROR] ${error}`)
     })
 }
-
-
 
 export const convertToValidURL = (url: string): string => {
     const YOUTUBE_EMBED_BASE_URL = 'https://www.youtube.com/embed/'
     const enableJSAPI = '?enablejsapi=1';
     const YOUTUBE_ID = url.split('=')[1];
     return `${YOUTUBE_EMBED_BASE_URL}${YOUTUBE_ID}${enableJSAPI}`
+}
+
+export const getAllStoredVideos = async (): Promise<DbRow[]> => {
+    let DbRows: (DbRow[] | void) = await getAll();
+    return DbRows || [];
 }
