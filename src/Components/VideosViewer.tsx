@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { videosType, videoType } from "../Models/Video"
+import { DbRow } from "../Services/DBService"
 import { getAllStoredVideos } from "../Utilities/helper"
+import { debounce } from "../Utilities/helper"
 
 interface VideosViewerProp {
     displayedVideos: videosType["videos"];
     setDisplayedVideos: React.Dispatch<React.SetStateAction<videoType[]>>;
 }
 
-type customVideoType = videoType & {
+type customVideoType = DbRow & {
     alreadySet: boolean;
+    show: boolean;
 }
 
 export const VideosViewer: React.FC<VideosViewerProp> = ({ displayedVideos, setDisplayedVideos }) => {
@@ -17,16 +20,16 @@ export const VideosViewer: React.FC<VideosViewerProp> = ({ displayedVideos, setD
     useEffect(() => {
         retrieveStoredVideos();
     }, [displayedVideos]);
-
+    
     const retrieveStoredVideos = () => {
         getAllStoredVideos().then((storedVideos) => {
             const displayedVideosID = displayedVideos.map((video) => video.id);
             let customStoredVideos = storedVideos.map((storedVideo) => {
+
                 let video: customVideoType = {
-                    'id': storedVideo.id,
-                    'title': storedVideo.title,
-                    'url': storedVideo.url,
-                    alreadySet: false
+                    ...storedVideo,
+                    alreadySet: false,
+                    show: true
                 }
 
                 if (displayedVideosID.includes(video.id)) {
@@ -45,6 +48,8 @@ export const VideosViewer: React.FC<VideosViewerProp> = ({ displayedVideos, setD
         setDisplayedVideos((oldDisplayedVideos) => {
             const {
                 alreadySet,
+                notes,
+                show,
                 ...videoType
             } = video;
             return [
@@ -62,28 +67,69 @@ export const VideosViewer: React.FC<VideosViewerProp> = ({ displayedVideos, setD
         })
     }
 
+    const [searchValue, setSearchValue] = useState<string>("");
+
+    const handleSearchTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const searchTitle = event.target.value;
+        setStoredVideos((oldStoredVideos) => {
+            return oldStoredVideos.map((video) => {
+                video.show = false;
+                if (video.title.startsWith(searchTitle)) {
+                    video.show = true;
+                }
+                return video;
+            })
+        })
+    }
+
+    const debounceSearch = useCallback(debounce(handleSearchTitle, 1000), []);
+
+    const handleSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(event.target.value);
+        debounceSearch(event);
+    }
+
     return (
         <div>
             {
                 storedVideos.map((video) => {
-                    return (
-                        <div key={video.id + "List"} style={{backgroundColor: video.alreadySet? "green" : "red"}}>
-                            <div>
-                                {video.title}   
-                            </div>
+                    if (video.show) {
+                        return (
+                            <div key={video.id + "List"} style={{backgroundColor: video.alreadySet? "green" : "red"}}>
+                                <div>
+                                    {video.title}   
+                                </div>
 
-                            <div>
-                                {video.url}
+                                <a 
+                                    href={video.url}
+                                >
+                                    {video.url}
+                                </a>
+                                <button
+                                    onClick={video.alreadySet 
+                                                ? () => unload(video) 
+                                                : () => load(video)
+                                            }
+                                >
+                                    {video.alreadySet ? "Unload" : "Load"}
+                                </button>
                             </div>
-                            <button
-                                onClick={video.alreadySet ? () => unload(video) : () => load(video)}
-                            >
-                                {video.alreadySet ? "Unload" : "Load"}
-                            </button>
-                        </div>
-                    )
+                        )
+                    } else {
+                        return (
+                            <div key={video.id + "List"}>
+                            </div>
+                        )
+                    }   
                 })
             }
+            <div>
+                <input 
+                    placeholder="Search for a title" 
+                    onChange={handleSearchValue}
+                    value={searchValue}
+                />
+            </div>
         </div>
     )
 

@@ -141,3 +141,12 @@ export const getAllStoredVideos = async (): Promise<DbRow[]> => {
     return DbRows || [];
 }
 
+export const debounce = (callback: (...args: any) => void, timeout: number) => {
+    let timer: NodeJS.Timeout
+    return function (...args: any) {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            callback(...args)
+        }, timeout)
+    }
+}
