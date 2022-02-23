@@ -47,7 +47,7 @@ export const YoutubeIframe: React.FC<YoutubeProps> = ({ id, url, setPlayer}) => 
             
             window.onYouTubeIframeAPIReady = loadVideo;
         }
-    }, [loadVideo])
+    }, [])
 
     return (
         <iframe 
