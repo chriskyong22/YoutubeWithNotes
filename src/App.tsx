@@ -12,9 +12,8 @@ function App() {
 
   const [videos, setVideos] = useState<videosType["videos"]>([
     {
-      title: "Playlist",
-      url : "https://www.youtube.com/watch?v=vr_IHczK9kc",
-      // url: "https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3",
+      title: "Youtube Embedded Tutorial",
+      url : "https://www.youtube.com/watch?v=M7lc1UVf-VE",
       id: "someHash"
     }
   ]);
